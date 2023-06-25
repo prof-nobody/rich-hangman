@@ -21,8 +21,8 @@ def pick_word(word_list):
 
 
 def update_board() -> Panel:
-    game_panel = Panel(f"{word}\n\n{''.join(answer)}\n\nSTRIKES\n{'#' * strikes}",
-                       border_style=bs, title="hangman", height=5, width=50)
+    game_panel = Panel(f"{word}\n{''.join(answer)}\nSTRIKES\n{'#' * strikes}",
+                       border_style=bs, title="hangman", height=6, width=50)
     return game_panel
 
 
@@ -43,34 +43,35 @@ layout.split_column(
            ),
     Layout(name="lower")
 )
-layout['upper'].size = 5
+layout['upper'].size = 6
 layout['lower'].size = 4
 
-with Live(layout, auto_refresh=False) as live:
-    while True:
-        live.update(layout['upper'])
-        letter = input("Letter: ").lower()
 
-        if letter in word:
-            location = 0
-            while True:
-                location = word.find(letter, location)
-                if location != -1:
-                    answer[location] = letter
-                    print(location)
-                    location += 1
-                elif location == -1:
-                    break
-            if word == "".join(answer):
-                print("VICTORY!")
+while True:
+    layout['upper'].update(update_board())
+    print(layout)
+    letter = input("Letter: ").lower()
+
+    if letter in word:
+        location = 0
+        while True:
+            location = word.find(letter, location)
+            if location != -1:
+                answer[location] = letter
+                print(location)
+                location += 1
+            elif location == -1:
                 break
-        else:
-            strikes += 1
-            if strikes == 3:
-                bs = "yellow"
-            elif strikes == 5:
-                bs = "red"
-            elif strikes == 6:
-                print("Game Over")
-                break
+        if word == "".join(answer):
+            print("VICTORY!")
+            break
+    else:
+        strikes += 1
+        if strikes == 3:
+            bs = "yellow"
+        elif strikes == 5:
+            bs = "red"
+        elif strikes == 6:
+            print("Game Over")
+            break
 
